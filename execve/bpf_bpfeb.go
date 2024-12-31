@@ -54,7 +54,10 @@ type bpfSpecs struct {
 //
 // It can be passed ebpf.CollectionSpec.Assign.
 type bpfProgramSpecs struct {
+	TraceClone  *ebpf.ProgramSpec `ebpf:"trace_clone"`
 	TraceExecve *ebpf.ProgramSpec `ebpf:"trace_execve"`
+	TraceFork   *ebpf.ProgramSpec `ebpf:"trace_fork"`
+	TraceOpenat *ebpf.ProgramSpec `ebpf:"trace_openat"`
 }
 
 // bpfMapSpecs contains maps before they are loaded into the kernel.
@@ -92,12 +95,18 @@ func (m *bpfMaps) Close() error {
 //
 // It can be passed to loadBpfObjects or ebpf.CollectionSpec.LoadAndAssign.
 type bpfPrograms struct {
+	TraceClone  *ebpf.Program `ebpf:"trace_clone"`
 	TraceExecve *ebpf.Program `ebpf:"trace_execve"`
+	TraceFork   *ebpf.Program `ebpf:"trace_fork"`
+	TraceOpenat *ebpf.Program `ebpf:"trace_openat"`
 }
 
 func (p *bpfPrograms) Close() error {
 	return _BpfClose(
+		p.TraceClone,
 		p.TraceExecve,
+		p.TraceFork,
+		p.TraceOpenat,
 	)
 }
 

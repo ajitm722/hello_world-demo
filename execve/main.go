@@ -24,16 +24,42 @@ func main() {
 	// Ensure the eBPF objects are closed properly to release resources.
 	defer ebpfObj.Close()
 
-	// Attach the eBPF program to the `sys_enter_execve` tracepoint.
-	hook, err := link.Tracepoint("syscalls", "sys_enter_execve", ebpfObj.TraceExecve, nil)
+	// Attach the eBPF program to the sys_enter_execve tracepoint.
+	hookExecve, err := link.Tracepoint("syscalls", "sys_enter_execve", ebpfObj.TraceExecve, nil)
 	if err != nil {
-		// If attaching fails, terminate the program with an error message.
 		panic(err)
 	}
-	// Ensure the hook is closed properly to detach the eBPF program when the program exits.
-	defer hook.Close()
+	defer hookExecve.Close()
+
+	// Attach the eBPF program to the sys_enter_fork tracepoint.
+	hookFork, err := link.Tracepoint("syscalls", "sys_enter_fork", ebpfObj.TraceFork, nil)
+	if err != nil {
+		panic(err)
+	}
+	defer hookFork.Close()
+
+	// Attach the eBPF program to the sys_enter_clone tracepoint.
+	hookClone, err := link.Tracepoint("syscalls", "sys_enter_clone", ebpfObj.TraceClone, nil)
+	if err != nil {
+		panic(err)
+	}
+	defer hookClone.Close()
+
+	// Attach the eBPF program to the sys_enter_openat tracepoint.
+	hookOpenat, err := link.Tracepoint("syscalls", "sys_enter_openat", ebpfObj.TraceOpenat, nil)
+	if err != nil {
+		panic(err)
+	}
+	defer hookOpenat.Close()
+
+	// Attach the eBPF program to the sys_enter_read tracepoint.
+	// hookRead, err := link.Tracepoint("syscalls", "sys_enter_read", ebpfObj.TraceRead, nil)
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// defer hookRead.Close()
 
 	// Print a message to indicate that the program is waiting for events.
-	fmt.Println("Waiting for event to trigger!")
+	fmt.Println("Waiting for events to trigger!")
 	select {}
 }
