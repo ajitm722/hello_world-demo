@@ -54,7 +54,7 @@ type bpfSpecs struct {
 //
 // It can be passed ebpf.CollectionSpec.Assign.
 type bpfProgramSpecs struct {
-	Execve *ebpf.ProgramSpec `ebpf:"execve"`
+	TraceExecve *ebpf.ProgramSpec `ebpf:"trace_execve"`
 }
 
 // bpfMapSpecs contains maps before they are loaded into the kernel.
@@ -92,12 +92,12 @@ func (m *bpfMaps) Close() error {
 //
 // It can be passed to loadBpfObjects or ebpf.CollectionSpec.LoadAndAssign.
 type bpfPrograms struct {
-	Execve *ebpf.Program `ebpf:"execve"`
+	TraceExecve *ebpf.Program `ebpf:"trace_execve"`
 }
 
 func (p *bpfPrograms) Close() error {
 	return _BpfClose(
-		p.Execve,
+		p.TraceExecve,
 	)
 }
 
@@ -111,5 +111,6 @@ func _BpfClose(closers ...io.Closer) error {
 }
 
 // Do not access this directly.
+//
 //go:embed bpf_bpfeb.o
 var _BpfBytes []byte
